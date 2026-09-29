@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mémo DOM et Canvas - R1.12 Appli JS</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect x=%276%27 y=%276%27 width=%2788%27 height=%2788%27 rx=%2714%27 fill=%27%232f5fd9%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2730%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%278%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2712%27 fill=%27%23b5560f%27/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-page="memo">
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <header class="site-header">
+      <nav class="nav-wrap">
+        <a class="brand" href="index.html"
+          >R1.12 - Appli JS
+          <small>DOM, événements et Canvas</small>
+        </a>
+        <div class="site-nav">
+          <a href="index.html" data-nav="index">Accueil</a>
+          <a href="theme.html" data-nav="theme">Changeur de thème</a>
+          <a href="canvas.html" data-nav="canvas">Canvas</a>
+          <a href="animation.html" data-nav="animation">Animation</a>
+          <a href="memo.html" data-nav="memo">Mémo</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenu">
+      <p class="eyebrow">Aide-mémoire</p>
+      <h1>DOM, événements et Canvas</h1>
+      <p class="lede">À garder ouvert dans un onglet pendant les TP.</p>
+
+      <h2>Le DOM</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Code</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>document.getElementById("id")</code></td><td>L'élément qui a cet id (écrit sans <code>#</code>), ou <code>null</code>.</td></tr>
+            <tr><td><code>document.querySelector("sélecteur")</code></td><td>Le premier élément qui correspond au sélecteur CSS, ou <code>null</code>.</td></tr>
+            <tr><td><code>document.querySelectorAll("sélecteur")</code></td><td>Tous les éléments qui correspondent (liste).</td></tr>
+            <tr><td><code>el.textContent = "…"</code></td><td>Remplace le texte de l'élément.</td></tr>
+            <tr><td><code>el.classList.add / remove / toggle("classe")</code></td><td>Ajoute, retire, inverse une classe (sans le point).</td></tr>
+            <tr><td><code>el.classList.contains("classe")</code></td><td><code>true</code> si l'élément a la classe.</td></tr>
+            <tr><td><code>el.style.color = "red"</code></td><td>Style en ligne (préférer les classes).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Les événements</h2>
+      <pre><code>el.addEventListener("click", function () {
+  // exécuté à chaque clic sur el
+});</code></pre>
+      <p>
+        Autres événements courants : <code>"mouseover"</code>,
+        <code>"keydown"</code>, <code>"input"</code>, <code>"submit"</code>.
+        Avec une fonction nommée : <code>addEventListener("click", basculer)</code>,
+        <strong>sans</strong> parenthèses après <code>basculer</code>.
+      </p>
+
+      <h2>Le Canvas</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Code</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>const ctx = canvas.getContext("2d")</code></td><td>L'outil de dessin du canvas.</td></tr>
+            <tr><td><code>ctx.beginPath()</code></td><td>Commence un nouveau tracé.</td></tr>
+            <tr><td><code>ctx.arc(x, y, r, 0, 2 * Math.PI)</code></td><td>Décrit un cercle complet de centre (x, y) et de rayon r.</td></tr>
+            <tr><td><code>ctx.stroke()</code> / <code>ctx.fill()</code></td><td>Peint le contour / remplit la forme décrite.</td></tr>
+            <tr><td><code>ctx.strokeStyle</code>, <code>ctx.fillStyle</code></td><td>Couleur du contour, du remplissage.</td></tr>
+            <tr><td><code>ctx.lineWidth</code></td><td>Épaisseur du contour, en pixels.</td></tr>
+            <tr><td><code>ctx.globalAlpha</code></td><td>Opacité de 0 (transparent) à 1 (opaque) ; à remettre à 1 après usage.</td></tr>
+            <tr><td><code>ctx.clearRect(0, 0, largeur, hauteur)</code></td><td>Efface un rectangle (ici tout le canvas).</td></tr>
+            <tr><td><code>ctx.fillRect(x, y, largeur, hauteur)</code></td><td>Dessine un rectangle plein.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Repère : origine (0, 0) en haut à gauche, <code>x</code> vers la droite, <code>y</code> vers le bas.</p>
+
+      <h2>La boucle d'animation</h2>
+      <pre><code>function animer() {
+  ctx.clearRect(0, 0, 400, 400); // 1. effacer
+  // 2. mettre à jour les valeurs
+  // 3. redessiner
+  requestAnimationFrame(animer); // 4. image suivante
+}
+animer(); // premier appel</code></pre>
+
+      <h2>Erreurs fréquentes</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Symptôme</th><th>Cause probable</th></tr></thead>
+          <tbody>
+            <tr><td><code>Cannot read properties of null</code></td><td>Sélection ratée : id mal écrit, <code>#</code> en trop dans <code>getElementById</code>, ou script exécuté avant le HTML.</td></tr>
+            <tr><td>Le clic ne fait rien</td><td>Écouteur sur le mauvais élément, ou fonction appelée avec <code>()</code> dans <code>addEventListener</code>.</td></tr>
+            <tr><td>La classe ne s'applique pas</td><td>Point en trop : <code>toggle(".dark-theme")</code> au lieu de <code>toggle("dark-theme")</code>.</td></tr>
+            <tr><td>Rien ne s'affiche sur le canvas</td><td><code>stroke()</code> ou <code>fill()</code> oublié, ou forme hors du canvas.</td></tr>
+            <tr><td>Tous les cercles sont reliés</td><td><code>beginPath()</code> oublié avant chaque <code>arc</code>.</td></tr>
+            <tr><td>Le dessin laisse une traînée</td><td><code>clearRect</code> oublié au début de chaque image.</td></tr>
+            <tr><td>L'animation ne démarre pas</td><td>Premier appel <code>animer();</code> oublié.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      R1.12 - Appli JS · BUT MMI 1 · R1.12 Développement Web · IUT de Béziers
+    </footer>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>

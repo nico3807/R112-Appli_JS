@@ -1,65 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>R112-Appli_JS — TD JavaScript</title>
+    <title>R1.12 - Appli JS · BUT MMI 1</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect x=%276%27 y=%276%27 width=%2788%27 height=%2788%27 rx=%2714%27 fill=%27%232f5fd9%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2730%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%278%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2712%27 fill=%27%23b5560f%27/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body data-page="index">
     <a class="skip-link" href="#contenu">Aller au contenu</a>
+
     <header class="site-header">
-      <div class="wrap">
-        <a class="brand" href="index.html">R112-Appli_JS</a>
-        <nav>
-          <a href="td/theme.html">TP 1 · Changeur de thème</a>
-          <a href="td/canvas.html">TP 2 · Canvas</a>
-          <a href="td/canvas-animation.html">TP 2 · Animation</a>
-        </nav>
-      </div>
+      <nav class="nav-wrap">
+        <a class="brand" href="index.html"
+          >R1.12 - Appli JS
+          <small>DOM, événements et Canvas</small>
+        </a>
+        <div class="site-nav">
+          <a href="index.html" data-nav="index">Accueil</a>
+          <a href="theme.html" data-nav="theme">Changeur de thème</a>
+          <a href="canvas.html" data-nav="canvas">Canvas</a>
+          <a href="animation.html" data-nav="animation">Animation</a>
+          <a href="memo.html" data-nav="memo">Mémo</a>
+        </div>
+      </nav>
     </header>
 
     <main id="contenu">
-      <h1>TD JavaScript — Appli JS</h1>
-      <p>
-        R1.12 Développement Web · BUT MMI Béziers. Ce TD fusionne les TP
-        <strong>Changeur de thème</strong> (manipulation du DOM) et
-        <strong>Canvas</strong> (dessin et animation). Chaque exercice est
-        <strong>résolvable directement dans la page</strong> : modifiez le code,
-        cliquez sur « Exécuter », observez le résultat.
+      <p class="eyebrow">BUT MMI 1 · R1.12 Développement Web</p>
+      <h1>Appli JS : le DOM et le Canvas</h1>
+      <p class="lede">
+        Deux petites applications pour passer de la théorie à la page web :
+        un <strong>changeur de thème</strong> (sélectionner, écouter,
+        modifier le DOM) puis un <strong>dessin animé sur canvas</strong>
+        (tracer des cercles, les animer, créer un effet d'écho). Tous les
+        exercices se font et se vérifient directement dans ces pages.
       </p>
 
-      <div class="cards">
-        <a class="card" href="td/theme.html">
-          <h3>TP 1 · Changeur de thème</h3>
-          <p>Sélection du DOM, événements, <code>classList.toggle()</code> : basculez entre mode clair et mode sombre.</p>
+      <div class="grid cols-3" style="margin-top: 1.8rem">
+        <a class="card carte-lien" href="theme.html">
+          <p class="eyebrow">TP 1</p>
+          <h3>Changeur de thème</h3>
+          <p><code>getElementById</code>, <code>addEventListener</code>, <code>classList.toggle</code> : un bouton qui bascule la page en mode sombre.</p>
         </a>
-        <a class="card" href="td/canvas.html">
-          <h3>TP 2 · Canvas — dessin</h3>
-          <p>Balise <code>&lt;canvas&gt;</code>, contexte 2D, cercles concentriques et opacité progressive.</p>
+        <a class="card carte-lien" href="canvas.html">
+          <p class="eyebrow">TP 2</p>
+          <h3>Canvas : dessin</h3>
+          <p>Contexte 2D, <code>arc</code>, <code>stroke</code> et <code>fill</code> : une cible de cercles concentriques à opacité progressive.</p>
         </a>
-        <a class="card" href="td/canvas-animation.html">
-          <h3>TP 2 · Canvas — animation</h3>
-          <p><code>requestAnimationFrame</code>, calcul du rayon et de l'opacité : créez un effet d'écho.</p>
+        <a class="card carte-lien" href="animation.html">
+          <p class="eyebrow">TP 3</p>
+          <h3>Canvas : animation</h3>
+          <p><code>requestAnimationFrame</code>, rebond et <code>Math.sin</code> : des cercles qui pulsent comme des ondes.</p>
         </a>
       </div>
 
-      <div class="callout info">
-        <h4>Comment travailler ?</h4>
-        <p>
-          Dans chaque page, les encadrés « Bac à sable » contiennent un éditeur :
-          écrivez votre code, cliquez sur <strong>Exécuter</strong>, et corrigez
-          jusqu'à obtenir le résultat attendu. Un quiz de vérification ponctue
-          chaque page.
-        </p>
+      <h2>Avant de commencer</h2>
+      <p>
+        Ces TP s'appuient sur les bases vues en TD : variables, conditions,
+        boucles et fonctions. En cas de doute, reprenez les pages
+        d'algorithmique et du TD Bases du JavaScript.
+      </p>
+
+      <h2>Comment travailler</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>▶ Exécuter</h3>
+          <p>Lance votre code dans l'<strong>aperçu</strong> de l'exercice : une vraie petite page, avec son bouton ou son canvas. Vous pouvez cliquer dedans.</p>
+        </div>
+        <div class="card">
+          <h3>✔ Vérifier</h3>
+          <p>Teste automatiquement votre code (clics simulés, dessins et images de l'animation contrôlés) et vous dit précisément ce qui manque.</p>
+        </div>
+        <div class="card">
+          <h3>📜 Certificat</h3>
+          <p>Les exercices réussis comptent pour votre certificat PDF, établi à votre nom. Les solutions consultées y sont indiquées.</p>
+        </div>
       </div>
 
-      <footer class="site-footer">
-        R112-Appli_JS · BUT MMI 1 · R1.12 Développement Web ·
-        <a href="index.html">Accueil du site</a>
-      </footer>
+      <h2>Votre progression et votre certificat</h2>
+      <p>
+        Identifiez-vous avec votre prénom et votre nom : votre progression est
+        enregistrée à votre nom sur ce poste, et vous pouvez télécharger à
+        tout moment votre <strong>certificat PDF</strong> (mention « NON
+        TERMINÉ » tant que les 10 exercices ne sont pas réussis).
+      </p>
+      <div class="session-barre">
+        <span id="etudiant-nom" class="session-nom"></span>
+        <button type="button" class="btn petit" id="ouvrir-certificat">📜 Certificat PDF</button>
+        <button type="button" class="btn secondary petit" id="changer-etudiant">S'identifier</button>
+      </div>
+      <ul class="progression-tp" id="progression-tp"></ul>
+
+      <h2>Objectifs</h2>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Savoir-faire technique</h3>
+          <ul>
+            <li>Sélectionner un élément du DOM et réagir à un clic.</li>
+            <li>Modifier le style d'une page en ajoutant ou retirant une classe.</li>
+            <li>Tracer des formes sur un canvas et régler couleur, épaisseur, opacité.</li>
+            <li>Construire une boucle d'animation avec <code>requestAnimationFrame</code>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Façon de penser</h3>
+          <ul>
+            <li>Découper une interaction en trois temps : sélectionner, écouter, modifier.</li>
+            <li>Remplir un tableau de valeurs avant d'écrire une boucle.</li>
+            <li>Penser une animation image par image : effacer, calculer, redessiner.</li>
+            <li>Lire un message d'erreur (<code>null</code>, fonction non appelée…) pour trouver la cause.</li>
+          </ul>
+        </div>
+      </div>
+
+      <nav class="suite" aria-label="Suite du parcours">
+        <a class="btn" href="theme.html">Commencer : TP 1, le changeur de thème →</a>
+      </nav>
     </main>
 
-    <script src="js/bac-a-sable.js"></script>
+    <footer class="site-footer">
+      R1.12 - Appli JS · BUT MMI 1 · R1.12 Développement Web · IUT de Béziers
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/vendor/jspdf.umd.min.js"></script>
+    <script src="js/certificat-logos.js"></script>
+    <script src="js/certificat.js"></script>
+    <script src="js/parcours.js"></script>
+    <script src="js/atelier.js"></script>
+    <script src="js/exercices-data.js"></script>
+    <script src="js/exercices.js"></script>
   </body>
 </html>

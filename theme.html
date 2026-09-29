@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP 1 · Changeur de thème - R1.12 Appli JS</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect x=%276%27 y=%276%27 width=%2788%27 height=%2788%27 rx=%2714%27 fill=%27%232f5fd9%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2730%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%278%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2712%27 fill=%27%23b5560f%27/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-page="theme">
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <header class="site-header">
+      <nav class="nav-wrap">
+        <a class="brand" href="index.html"
+          >R1.12 - Appli JS
+          <small>DOM, événements et Canvas</small>
+        </a>
+        <div class="site-nav">
+          <a href="index.html" data-nav="index">Accueil</a>
+          <a href="theme.html" data-nav="theme">Changeur de thème</a>
+          <a href="canvas.html" data-nav="canvas">Canvas</a>
+          <a href="animation.html" data-nav="animation">Animation</a>
+          <a href="memo.html" data-nav="memo">Mémo</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenu" data-tp="theme">
+      <p class="eyebrow">TP 1 · Manipulation du DOM</p>
+      <h1>Le changeur de thème</h1>
+      <p class="lede">
+        Objectif : un bouton qui fait basculer la page entre mode clair et mode
+        sombre. Derrière ce petit effet se cache le trio de base de tout site
+        interactif : <strong>sélectionner</strong> un élément,
+        <strong>écouter</strong> un événement, <strong>modifier</strong> la
+        page.
+      </p>
+
+      <div class="session-barre">
+        <span id="etudiant-nom" class="session-nom"></span>
+        <span class="progress-text" id="progress-tp"></span>
+        <button type="button" class="btn petit" id="ouvrir-certificat">📜 Certificat PDF</button>
+        <button type="button" class="btn secondary petit" id="changer-etudiant">S'identifier</button>
+      </div>
+
+      <div class="callout info">
+        <h4>Comment travailler</h4>
+        <p>
+          Chaque exercice a son propre <strong>aperçu</strong> : une vraie
+          petite page qui contient le bouton <code>#toggle-theme-btn</code>.
+          <em>▶ Exécuter</em> lance votre code dans cet aperçu (vous pouvez
+          ensuite cliquer sur le bouton), <em>✔ Vérifier</em> le teste
+          automatiquement et compte pour votre certificat.
+        </p>
+      </div>
+
+      <h2>1. Le DOM : la page vue par JavaScript</h2>
+      <p>
+        Quand le navigateur lit votre HTML, il construit en mémoire un
+        <strong>arbre d'objets</strong> : le DOM (<em>Document Object
+        Model</em>). Chaque balise devient un objet que JavaScript peut
+        retrouver, lire et modifier. Tout part de l'objet
+        <code>document</code>.
+      </p>
+      <figure class="schema">
+        <svg viewBox="0 0 520 190" role="img" aria-label="Arbre du DOM : document contient html, qui contient head et body ; body contient h3, p et le bouton d'id toggle-theme-btn.">
+          <g font-family="ui-monospace, monospace" font-size="13" text-anchor="middle">
+            <g fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.5">
+              <path d="M260 34 V52" /><path d="M260 76 L150 96" /><path d="M260 76 L370 96" />
+              <path d="M370 120 L270 140" /><path d="M370 120 L370 140" /><path d="M370 120 L470 140" />
+            </g>
+            <rect x="205" y="10" width="110" height="24" rx="6" fill="#2f5fd9" /><text x="260" y="27" fill="#fff">document</text>
+            <rect x="215" y="52" width="90" height="24" rx="6" fill="#eaf0ff" stroke="#2f5fd9" /><text x="260" y="69" fill="#1f3f9e">html</text>
+            <rect x="105" y="96" width="90" height="24" rx="6" fill="#eaf0ff" stroke="#2f5fd9" /><text x="150" y="113" fill="#1f3f9e">head</text>
+            <rect x="325" y="96" width="90" height="24" rx="6" fill="#eaf0ff" stroke="#2f5fd9" /><text x="370" y="113" fill="#1f3f9e">body</text>
+            <rect x="235" y="140" width="70" height="24" rx="6" fill="#eaf0ff" stroke="#2f5fd9" /><text x="270" y="157" fill="#1f3f9e">h3</text>
+            <rect x="335" y="140" width="70" height="24" rx="6" fill="#eaf0ff" stroke="#2f5fd9" /><text x="370" y="157" fill="#1f3f9e">p</text>
+            <rect x="415" y="140" width="100" height="24" rx="6" fill="#fdeee0" stroke="#b5560f" /><text x="465" y="157" fill="#b5560f">button#…</text>
+          </g>
+        </svg>
+        <figcaption>La page de l'aperçu, vue comme un arbre : on part de <code>document</code> pour atteindre le bouton.</figcaption>
+      </figure>
+
+      <h2>2. Sélectionner un élément</h2>
+      <p>Pour agir sur un élément, on le range d'abord dans une variable :</p>
+      <div class="duo">
+        <div class="duo-a">
+          <h4>HTML</h4>
+          <pre><code>&lt;body&gt;
+  &lt;button id="toggle-theme-btn"&gt;
+    Activer le Mode Sombre
+  &lt;/button&gt;
+&lt;/body&gt;</code></pre>
+        </div>
+        <div class="duo-b">
+          <h4>JavaScript</h4>
+          <pre><code>// par son id (unique), SANS le #
+const themeButton =
+  document.getElementById("toggle-theme-btn");
+
+// par un sélecteur CSS, comme en CSS
+const bodyElement =
+  document.querySelector("body");</code></pre>
+        </div>
+      </div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3><code>getElementById("id")</code></h3>
+          <p>Cherche l'élément qui porte cet <code>id</code>. Rapide et sans ambiguïté, mais uniquement par id : on écrit le nom <strong>sans</strong> dièse.</p>
+        </div>
+        <div class="card">
+          <h3><code>querySelector("sélecteur")</code></h3>
+          <p>Accepte n'importe quel sélecteur CSS (<code>"body"</code>, <code>"#toggle-theme-btn"</code>, <code>".carte"</code>…) et renvoie le <strong>premier</strong> élément trouvé.</p>
+        </div>
+      </div>
+      <div class="callout warn">
+        <h4>Quand la sélection renvoie null</h4>
+        <p>
+          Si l'élément n'existe pas (faute de frappe, <code>#</code> en trop
+          dans <code>getElementById</code>, ou script exécuté
+          <strong>avant</strong> que le HTML soit chargé), on obtient
+          <code>null</code>, et la ligne suivante plante avec
+          « <em>Cannot read properties of null</em> ». C'est pourquoi on lie
+          <code>script.js</code> juste avant <code>&lt;/body&gt;</code>.
+        </p>
+      </div>
+      <div data-exo="1"></div>
+
+      <h2>3. Écouter un événement</h2>
+      <p>
+        Un <strong>événement</strong>, c'est quelque chose qui arrive sur la
+        page : un clic, une touche, le survol de la souris… On demande à un
+        élément d'<strong>appeler une fonction</strong> quand l'événement se
+        produit :
+      </p>
+      <pre><code>themeButton.addEventListener("click", function () {
+  // ce code attend le clic : il ne s'exécute pas tout de suite
+});</code></pre>
+      <p>
+        La fonction passée en second argument s'appelle un
+        <strong>callback</strong> (fonction de rappel) : on la donne au
+        navigateur, qui la rappellera au bon moment, à chaque clic.
+      </p>
+      <div class="callout danger">
+        <h4>Piège : les parenthèses en trop</h4>
+        <p>
+          Avec une fonction nommée, on écrit
+          <code>addEventListener("click", basculer)</code> et
+          <strong>pas</strong> <code>basculer()</code> : avec les parenthèses,
+          la fonction s'exécute immédiatement, une seule fois, au chargement,
+          et c'est son résultat (<code>undefined</code>) qui est confié au
+          bouton.
+        </p>
+      </div>
+      <div data-exo="2"></div>
+
+      <h2>4. Ajouter, retirer, basculer une classe</h2>
+      <p>
+        Plutôt que de changer les couleurs une par une en JavaScript, on
+        laisse le CSS faire son travail : une règle <code>body.dark-theme</code>
+        décrit le mode sombre, et JavaScript se contente d'ajouter ou de
+        retirer la classe.
+      </p>
+      <div class="duo">
+        <div class="duo-a">
+          <h4>CSS (déjà en place)</h4>
+          <pre><code>body.dark-theme {
+  background: #12141c;
+  color: #e7e9f2;
+}</code></pre>
+        </div>
+        <div class="duo-b">
+          <h4>JavaScript</h4>
+          <pre><code>bodyElement.classList.add("dark-theme");
+bodyElement.classList.remove("dark-theme");
+bodyElement.classList.toggle("dark-theme");
+bodyElement.classList.contains("dark-theme");</code></pre>
+        </div>
+      </div>
+      <p>
+        <code>toggle</code> <strong>inverse</strong> la présence de la classe
+        : absente, il l'ajoute ; présente, il la retire. Un seul appel suffit
+        donc pour faire un interrupteur. <code>contains</code> ne modifie
+        rien : il répond <code>true</code> ou <code>false</code>.
+      </p>
+      <div data-exo="3"></div>
+
+      <div class="quiz">
+        <p class="quiz-question">
+          Le body a déjà la classe <code>dark-theme</code>. Que fait
+          <code>classList.toggle("dark-theme")</code> ?
+        </p>
+        <div class="quiz-choix">
+          <button type="button" data-bon>Il retire la classe</button>
+          <button type="button">Il l'ajoute une deuxième fois</button>
+          <button type="button">Rien : elle est déjà là</button>
+        </div>
+        <p class="quiz-explication" hidden>
+          <code>toggle</code> inverse l'état : présente → retirée. C'est
+          l'équivalent d'un <code>if (contains) remove else add</code>, en une
+          ligne.
+        </p>
+      </div>
+
+      <h2>5. Modifier le texte selon l'état</h2>
+      <p>
+        Dernière étape : le bouton doit toujours proposer l'<em>autre</em>
+        mode. Après la bascule, on <strong>regarde</strong> l'état de la page
+        et on choisit le texte :
+      </p>
+      <div class="duo">
+        <div class="duo-a">
+          <h4>Pseudo-code</h4>
+          <pre><code>AU CLIC SUR le bouton :
+  basculer la classe dark-theme
+  SI le body a dark-theme ALORS
+    texte ← "Activer le Mode Clair"
+  SINON
+    texte ← "Activer le Mode Sombre"
+  FIN SI</code></pre>
+        </div>
+        <div class="duo-b">
+          <h4>À utiliser</h4>
+          <pre><code>bodyElement.classList.contains("dark-theme")
+// → true ou false
+
+themeButton.textContent = "…";
+// remplace le texte du bouton</code></pre>
+        </div>
+      </div>
+      <div data-exo="4"></div>
+
+      <div class="callout ok">
+        <h4>À retenir</h4>
+        <ul>
+          <li><strong>Sélectionner</strong> : <code>getElementById("id")</code> (sans #) ou <code>querySelector("sélecteur CSS")</code>. Un <code>null</code> signale un élément introuvable.</li>
+          <li><strong>Écouter</strong> : <code>élément.addEventListener("click", fonction)</code> ; la fonction attend l'événement.</li>
+          <li><strong>Modifier</strong> : <code>classList.toggle / add / remove / contains</code> pour le style, <code>textContent</code> pour le texte.</li>
+        </ul>
+      </div>
+
+      <nav class="suite" aria-label="Navigation entre TP">
+        <a class="btn secondary" href="index.html">← Accueil</a>
+        <a class="btn" href="canvas.html">TP 2 : Canvas →</a>
+      </nav>
+    </main>
+
+    <footer class="site-footer">
+      R1.12 - Appli JS · BUT MMI 1 · R1.12 Développement Web · IUT de Béziers
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/vendor/jspdf.umd.min.js"></script>
+    <script src="js/certificat-logos.js"></script>
+    <script src="js/certificat.js"></script>
+    <script src="js/parcours.js"></script>
+    <script src="js/atelier.js"></script>
+    <script src="js/exercices-data.js"></script>
+    <script src="js/exercices.js"></script>
+  </body>
+</html>
