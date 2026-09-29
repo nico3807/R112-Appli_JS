@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP 3 · Canvas, animation - R1.12 Appli JS</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect x=%276%27 y=%276%27 width=%2788%27 height=%2788%27 rx=%2714%27 fill=%27%232f5fd9%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2730%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%278%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2712%27 fill=%27%23b5560f%27/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-page="animation">
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <header class="site-header">
+      <nav class="nav-wrap">
+        <a class="brand" href="index.html"
+          >R1.12 - Appli JS
+          <small>DOM, événements et Canvas</small>
+        </a>
+        <div class="site-nav">
+          <a href="index.html" data-nav="index">Accueil</a>
+          <a href="theme.html" data-nav="theme">Changeur de thème</a>
+          <a href="canvas.html" data-nav="canvas">Canvas</a>
+          <a href="animation.html" data-nav="animation">Animation</a>
+          <a href="memo.html" data-nav="memo">Mémo</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenu" data-tp="animation">
+      <p class="eyebrow">TP 3 · Faire bouger le dessin</p>
+      <h1>Canvas : l'animation et l'effet d'écho</h1>
+      <p class="lede">
+        Une animation, c'est un dessin animé : une suite d'images fixes,
+        chacune un peu différente de la précédente, affichées assez vite pour
+        que l'œil y voie un mouvement. Objectif du TP : des cercles qui
+        pulsent comme des ondes dans l'eau.
+      </p>
+
+      <div class="session-barre">
+        <span id="etudiant-nom" class="session-nom"></span>
+        <span class="progress-text" id="progress-tp"></span>
+        <button type="button" class="btn petit" id="ouvrir-certificat">📜 Certificat PDF</button>
+        <button type="button" class="btn secondary petit" id="changer-etudiant">S'identifier</button>
+      </div>
+
+      <h2>1. Une image, puis la suivante</h2>
+      <p>Chaque image de l'animation suit toujours les mêmes quatre étapes :</p>
+      <div class="flux">
+        <div class="flux-etape">
+          <strong>1. Effacer</strong>
+          <p><code>ctx.clearRect(0, 0, 400, 400)</code> : on repart d'un canvas vide.</p>
+        </div>
+        <div class="flux-fleche" aria-hidden="true">→</div>
+        <div class="flux-etape">
+          <strong>2. Mettre à jour</strong>
+          <p>On calcule les nouvelles valeurs : rayon, position, opacité…</p>
+        </div>
+        <div class="flux-fleche" aria-hidden="true">→</div>
+        <div class="flux-etape">
+          <strong>3. Redessiner</strong>
+          <p>On trace la scène avec ces nouvelles valeurs.</p>
+        </div>
+      </div>
+      <p>
+        <strong>4. Replanifier</strong> : <code>requestAnimationFrame(animer)</code>
+        demande au navigateur de rappeler <code>animer</code> juste avant
+        d'afficher l'image suivante, environ 60 fois par seconde.
+      </p>
+      <div class="callout warn">
+        <h4>Sans effacer, le dessin « bave »</h4>
+        <p>
+          Le canvas ne se vide jamais tout seul : chaque nouveau tracé
+          s'ajoute aux anciens. Sans <code>clearRect</code>, on ne voit pas un
+          cercle qui bouge, mais la trace de toutes ses positions
+          successives. Comparez dans l'exercice ci-dessous, avant et après
+          avoir ajouté l'effacement.
+        </p>
+      </div>
+      <div data-exo="8"></div>
+
+      <h2>2. Pourquoi pas une boucle for ?</h2>
+      <p>
+        Une boucle <code>for</code> ou <code>while</code> calcule toutes ses
+        étapes d'un coup : le navigateur n'affiche la page qu'une fois la
+        boucle terminée, on ne voit donc que la dernière image (et une boucle
+        infinie fige l'onglet). <code>requestAnimationFrame</code> fait
+        l'inverse : une seule image par appel, puis il rend la main au
+        navigateur, qui affiche, puis rappelle la fonction.
+      </p>
+      <div class="duo">
+        <div class="duo-a">
+          <h4>✘ Tout d'un coup</h4>
+          <pre><code>for (let r = 180; r &gt; 20; r -= 2) {
+  dessiner(r);
+}
+// on ne voit que le cercle final</code></pre>
+        </div>
+        <div class="duo-b">
+          <h4>✔ Une image à la fois</h4>
+          <pre><code>function animer() {
+  dessiner(rayon);
+  rayon -= 2;
+  requestAnimationFrame(animer);
+}
+animer(); // premier appel</code></pre>
+        </div>
+      </div>
+      <div class="callout danger">
+        <h4>Piège : oublier le premier appel</h4>
+        <p>
+          <code>animer</code> ne se lance pas toute seule : il faut l'appeler
+          une première fois (<code>animer();</code>) en bas du script. Ensuite
+          seulement, <code>requestAnimationFrame</code> prend le relais à
+          chaque image.
+        </p>
+      </div>
+
+      <h2>3. Rebondir entre deux limites</h2>
+      <p>
+        Pour que le cercle rétrécisse puis grossisse, on garde en mémoire un
+        <strong>sens</strong> : <code>-1</code> quand il rétrécit,
+        <code>+1</code> quand il grossit. À chaque image,
+        <code>rayon += sens * 2</code> ; quand le rayon atteint une limite, on
+        change le signe du sens : <code>sens = -sens</code>. Suivez les
+        dernières images avant le rebond :
+      </p>
+      <div id="trace-rebond"></div>
+      <div data-exo="9"></div>
+
+      <h2>4. L'effet d'écho : une onde et des retards</h2>
+      <p>
+        <code>Math.sin</code> est la fonction idéale pour une onde : quand son
+        argument augmente, elle oscille sans fin entre -1 et 1. Donc
+        <code>60 + 60 * Math.sin(temps)</code> oscille entre 0 et 120 : un
+        rayon qui grossit et rétrécit en douceur, sans avoir à gérer de sens.
+      </p>
+      <p>
+        Pour l'écho, chaque cercle <code>i</code> suit la même onde avec un
+        <strong>retard</strong> : <code>Math.sin(temps - i * 0.5)</code>. Le
+        cercle 0 est en avance, le cercle 1 le suit un peu plus tard, etc. En
+        rendant les cercles en retard de plus en plus transparents
+        (<code>1 - i / nbCercles</code>), on obtient des ondes qui semblent
+        s'éloigner.
+      </p>
+      <div data-exo="10"></div>
+
+      <div class="quiz">
+        <p class="quiz-question">
+          Pourquoi appeler <code>requestAnimationFrame(animer)</code> à la fin
+          de <code>animer()</code> ?
+        </p>
+        <div class="quiz-choix">
+          <button type="button" data-bon>Pour programmer l'image suivante : sans cet appel, l'animation s'arrête après une image.</button>
+          <button type="button">Pour effacer le canvas.</button>
+          <button type="button">C'est facultatif, l'animation tourne toute seule.</button>
+        </div>
+        <p class="quiz-explication" hidden>
+          <code>requestAnimationFrame</code> ne demande qu'<strong>une</strong>
+          image. C'est parce que chaque image redemande la suivante que
+          l'animation continue, au rythme de l'écran.
+        </p>
+      </div>
+
+      <div class="callout ok">
+        <h4>À retenir</h4>
+        <ul>
+          <li>Une image = effacer (<code>clearRect</code>), mettre à jour, redessiner, replanifier (<code>requestAnimationFrame</code>).</li>
+          <li>Un premier appel lance l'animation ; ensuite chaque image demande la suivante.</li>
+          <li>Rebond : une variable <code>sens</code> qu'on inverse aux limites (<code>sens = -sens</code>).</li>
+          <li>Onde : <code>Math.sin</code> oscille entre -1 et 1 ; un décalage <code>- i * 0.5</code> crée l'écho.</li>
+        </ul>
+      </div>
+
+      <nav class="suite" aria-label="Navigation entre TP">
+        <a class="btn secondary" href="canvas.html">← TP 2 : Canvas</a>
+        <a class="btn" href="memo.html">Le mémo →</a>
+      </nav>
+    </main>
+
+    <footer class="site-footer">
+      R1.12 - Appli JS · BUT MMI 1 · R1.12 Développement Web · IUT de Béziers
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/trace.js"></script>
+    <script src="js/vendor/jspdf.umd.min.js"></script>
+    <script src="js/certificat-logos.js"></script>
+    <script src="js/certificat.js"></script>
+    <script src="js/parcours.js"></script>
+    <script src="js/atelier.js"></script>
+    <script src="js/exercices-data.js"></script>
+    <script src="js/exercices.js"></script>
+    <script src="js/pages/animation.js"></script>
+  </body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP 2 · Canvas, dessin - R1.12 Appli JS</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect x=%276%27 y=%276%27 width=%2788%27 height=%2788%27 rx=%2714%27 fill=%27%232f5fd9%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2730%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%278%27/%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2712%27 fill=%27%23b5560f%27/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-page="canvas">
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <header class="site-header">
+      <nav class="nav-wrap">
+        <a class="brand" href="index.html"
+          >R1.12 - Appli JS
+          <small>DOM, événements et Canvas</small>
+        </a>
+        <div class="site-nav">
+          <a href="index.html" data-nav="index">Accueil</a>
+          <a href="theme.html" data-nav="theme">Changeur de thème</a>
+          <a href="canvas.html" data-nav="canvas">Canvas</a>
+          <a href="animation.html" data-nav="animation">Animation</a>
+          <a href="memo.html" data-nav="memo">Mémo</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenu" data-tp="canvas">
+      <p class="eyebrow">TP 2 · Dessiner en JavaScript</p>
+      <h1>Canvas : dessiner des cercles</h1>
+      <p class="lede">
+        La balise <code>&lt;canvas&gt;</code> est une surface de dessin : on y
+        trace des formes pixel par pixel, en JavaScript. Objectif du TP : une
+        cible de cercles concentriques de plus en plus opaques vers le centre.
+      </p>
+
+      <div class="session-barre">
+        <span id="etudiant-nom" class="session-nom"></span>
+        <span class="progress-text" id="progress-tp"></span>
+        <button type="button" class="btn petit" id="ouvrir-certificat">📜 Certificat PDF</button>
+        <button type="button" class="btn secondary petit" id="changer-etudiant">S'identifier</button>
+      </div>
+
+      <h2>1. Le canvas et son repère</h2>
+      <p>
+        Le canvas se déclare en HTML avec sa taille en pixels, puis on
+        récupère en JavaScript son <strong>contexte 2D</strong> : l'objet qui
+        possède tous les outils de dessin (on l'appelle presque toujours
+        <code>ctx</code>).
+      </p>
+      <div class="duo">
+        <div class="duo-a">
+          <h4>HTML</h4>
+          <pre><code>&lt;canvas id="monCanvas"
+        width="400" height="400"&gt;
+&lt;/canvas&gt;</code></pre>
+        </div>
+        <div class="duo-b">
+          <h4>JavaScript</h4>
+          <pre><code>const canvas = document.getElementById("monCanvas");
+const ctx = canvas.getContext("2d");</code></pre>
+        </div>
+      </div>
+      <figure class="schema">
+        <svg viewBox="0 0 340 250" role="img" aria-label="Repère du canvas : l'origine (0, 0) est en haut à gauche, x augmente vers la droite, y augmente vers le bas. Le centre d'un canvas de 400 par 400 est le point (200, 200).">
+          <g font-family="ui-monospace, monospace" font-size="12">
+            <rect x="40" y="30" width="200" height="200" fill="#ffffff" stroke="#9aa3b8" />
+            <path d="M40 30 H290" stroke="#2f5fd9" stroke-width="2" marker-end="url(#fl)" />
+            <path d="M40 30 V245" stroke="#b5560f" stroke-width="2" marker-end="url(#fl2)" />
+            <defs>
+              <marker id="fl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#2f5fd9" /></marker>
+              <marker id="fl2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#b5560f" /></marker>
+            </defs>
+            <circle cx="40" cy="30" r="4" fill="#1c2333" />
+            <text x="6" y="22" fill="currentColor">(0, 0)</text>
+            <text x="296" y="34" fill="#2f5fd9">x</text>
+            <text x="30" y="248" fill="#b5560f" text-anchor="end">y</text>
+            <circle cx="140" cy="130" r="4" fill="#2f5fd9" />
+            <text x="148" y="126" fill="currentColor">(200, 200)</text>
+            <text x="244" y="228" fill="currentColor">(400, 400)</text>
+            <circle cx="240" cy="230" r="3" fill="#1c2333" />
+          </g>
+        </svg>
+        <figcaption>L'origine est en <strong>haut à gauche</strong> et l'axe <code>y</code> descend : l'inverse des maths.</figcaption>
+      </figure>
+
+      <h2>2. Tracer un cercle</h2>
+      <p>Dessiner sur un canvas se fait toujours en trois temps :</p>
+      <div class="flux">
+        <div class="flux-etape">
+          <strong>1. Commencer un tracé</strong>
+          <p><code>ctx.beginPath()</code> : on repart d'une feuille de calque vide, sans relier au dessin précédent.</p>
+        </div>
+        <div class="flux-fleche" aria-hidden="true">→</div>
+        <div class="flux-etape">
+          <strong>2. Décrire la forme</strong>
+          <p><code>ctx.arc(x, y, rayon, début, fin)</code> : rien n'apparaît encore, on décrit le chemin.</p>
+        </div>
+        <div class="flux-fleche" aria-hidden="true">→</div>
+        <div class="flux-etape">
+          <strong>3. Peindre</strong>
+          <p><code>ctx.stroke()</code> dessine le contour, <code>ctx.fill()</code> remplit l'intérieur.</p>
+        </div>
+      </div>
+      <p>
+        Les angles de <code>arc</code> sont en <strong>radians</strong> : un
+        tour complet vaut <code>2 * Math.PI</code> (environ 6,28). Un cercle
+        entier va donc de <code>0</code> à <code>2 * Math.PI</code> ; s'arrêter
+        à <code>Math.PI</code> donnerait un demi-cercle.
+      </p>
+      <p>
+        Couleur et épaisseur se règlent sur le contexte, comme on choisit un
+        pinceau <strong>avant</strong> de peindre : <code>ctx.strokeStyle</code>
+        (couleur du contour), <code>ctx.fillStyle</code> (couleur de
+        remplissage), <code>ctx.lineWidth</code> (épaisseur). Ils restent
+        valables pour tous les tracés suivants, jusqu'à ce qu'on les change.
+      </p>
+      <div data-exo="5"></div>
+      <div data-exo="6"></div>
+
+      <div class="quiz">
+        <p class="quiz-question">
+          Ce code n'affiche rien. Pourquoi ?
+        </p>
+        <pre><code>ctx.beginPath();
+ctx.arc(200, 200, 80, 0, 2 * Math.PI);
+ctx.strokeStyle = "red";</code></pre>
+        <div class="quiz-choix">
+          <button type="button">Le rayon est trop petit.</button>
+          <button type="button" data-bon>Il manque ctx.stroke() : la forme est décrite mais jamais peinte.</button>
+          <button type="button">Il faut écrire 360 au lieu de 2 * Math.PI.</button>
+        </div>
+        <p class="quiz-explication" hidden>
+          <code>arc</code> ne fait que décrire le chemin. C'est
+          <code>stroke()</code> (ou <code>fill()</code>) qui peint réellement,
+          avec les réglages en cours au moment de l'appel.
+        </p>
+      </div>
+
+      <h2>3. Des cercles concentriques : raisonner avant de coder</h2>
+      <p>
+        On veut 8 cercles de même centre, le plus grand (rayon 180) presque
+        transparent, puis de plus en plus petits et de plus en plus opaques,
+        le dernier étant totalement opaque. Avant d'écrire la boucle,
+        remplissons le tableau des valeurs à la main, avec
+        <code>ecart = 180 / 8 = 22,5</code> :
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>i</th><th>0</th><th>1</th><th>2</th><th>…</th><th>7</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>rayon</td><td>180</td><td>157,5</td><td>135</td><td>…</td><td>22,5</td></tr>
+            <tr><td>opacité</td><td>1/8</td><td>2/8</td><td>3/8</td><td>…</td><td>8/8 = 1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        On lit la règle dans le tableau : à chaque tour, le rayon perd un
+        <code>ecart</code>, donc <code>rayon = maxRayon - i * ecart</code> ;
+        l'opacité vaut <code>(i + 1) / nbCercles</code>. Et la boucle va de
+        <code>i = 0</code> à <code>i = 7</code> : c'est la forme classique
+        <code>for (let i = 0; i &lt; nbCercles; i++)</code>.
+      </p>
+      <div class="callout warn">
+        <h4>Piège : décaler le compteur d'une case</h4>
+        <p>
+          Avec <code>for (let i = 1; i &lt;= nbCercles; i++)</code> et la même
+          formule, le premier rayon vaut 157,5 (le cercle de 180 disparaît) et
+          le dernier vaut <code>180 - 8 × 22,5 = 0</code> : un cercle
+          invisible. Le tableau des valeurs, rempli avant de coder, permet de
+          voir ce genre d'erreur tout de suite.
+        </p>
+      </div>
+      <p>Suivez la boucle pas à pas (ici avec 4 cercles, pour aller plus vite) :</p>
+      <div id="trace-cercles"></div>
+      <div data-exo="7"></div>
+
+      <div class="callout ok">
+        <h4>À retenir</h4>
+        <ul>
+          <li><code>canvas.getContext("2d")</code> donne l'outil de dessin <code>ctx</code>. L'origine (0, 0) est en haut à gauche, <code>y</code> descend.</li>
+          <li><code>beginPath</code> → <code>arc</code> (description) → <code>stroke</code> ou <code>fill</code> (peinture). Un cercle complet : de <code>0</code> à <code>2 * Math.PI</code>.</li>
+          <li>Les réglages (<code>strokeStyle</code>, <code>fillStyle</code>, <code>lineWidth</code>, <code>globalAlpha</code>) s'appliquent aux tracés suivants : pensez à remettre <code>globalAlpha</code> à 1.</li>
+          <li>Avant une boucle, remplir le tableau des valeurs pour trouver la formule en fonction de <code>i</code>.</li>
+        </ul>
+      </div>
+
+      <nav class="suite" aria-label="Navigation entre TP">
+        <a class="btn secondary" href="theme.html">← TP 1 : Changeur de thème</a>
+        <a class="btn" href="animation.html">TP 3 : Animation →</a>
+      </nav>
+    </main>
+
+    <footer class="site-footer">
+      R1.12 - Appli JS · BUT MMI 1 · R1.12 Développement Web · IUT de Béziers
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/trace.js"></script>
+    <script src="js/vendor/jspdf.umd.min.js"></script>
+    <script src="js/certificat-logos.js"></script>
+    <script src="js/certificat.js"></script>
+    <script src="js/parcours.js"></script>
+    <script src="js/atelier.js"></script>
+    <script src="js/exercices-data.js"></script>
+    <script src="js/exercices.js"></script>
+    <script src="js/pages/canvas.js"></script>
+  </body>
+</html>
