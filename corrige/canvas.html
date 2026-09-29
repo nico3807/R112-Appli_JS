@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corrigé - Canvas (réservé enseignant)</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Corrigé — TP 2 · Canvas (dessin + animation)</h1>
+      <p><strong>Réservé aux enseignants — non lié depuis l'index étudiant.</strong></p>
+
+      <h2>Dessin statique (exercices 1 et 2 de td/canvas.html)</h2>
+      <pre><code>const canvas = document.getElementById("monCanvas");
+const ctx = canvas.getContext("2d");
+
+// Exercice 1 : un cercle centré
+ctx.beginPath();
+ctx.arc(200, 200, 100, 0, 2 * Math.PI);
+ctx.strokeStyle = "#2f5fd9";
+ctx.lineWidth = 4;
+ctx.stroke();
+
+// Exercice 2 : cercles concentriques, opacité progressive
+const nbCercles = 8;
+const maxRayon = 180;
+const ecart = maxRayon / nbCercles;
+
+for (let i = 1; i <= nbCercles; i++) {
+  const rayonActuel = maxRayon - i * ecart; // rayon décroissant
+  ctx.globalAlpha = i / nbCercles;          // opacité 0→1 vers le centre
+  ctx.beginPath();
+  ctx.arc(200, 200, rayonActuel, 0, 2 * Math.PI);
+  ctx.strokeStyle = "#2f5fd9";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
+ctx.globalAlpha = 1; // réinitialisation après la boucle</code></pre>
+
+      <h2>Animation (exercices 1 et 2 de td/canvas-animation.html)</h2>
+      <pre><code>const canvas = document.getElementById("monCanvas");
+const ctx = canvas.getContext("2d");
+
+// Exercice 1 : rayon qui pulse
+let rayon = 180;
+let sens = -1;
+
+function animer() {
+  ctx.clearRect(0, 0, 400, 400);      // Q1
+  rayon += sens * 2;                  // Q2
+  if (rayon <= 20 || rayon >= 180) sens = -sens;
+  dessinerCercle(rayon, 1);           // Q3
+  requestAnimationFrame(animer);
+}
+animer();
+
+// Exercice 2 : écho de cercles
+const nbCercles = 6;
+let temps = 0;
+
+function lancerAnimation() {
+  ctx.clearRect(0, 0, 400, 400);      // Q4
+  temps += 0.03;
+  for (let i = 0; i < nbCercles; i++) {
+    const rayon = 60 + 60 * Math.sin(temps - i * 0.5); // Q5
+    const alpha = 1 - i / nbCercles;
+    dessinerCercle(rayon, alpha);
+  }
+  requestAnimationFrame(lancerAnimation);
+}
+lancerAnimation(); // Q6 : lancement initial dès le chargement</code></pre>
+
+      <p><a href="../index.html">← Retour à l'accueil</a></p>
+    </main>
+  </body>
+</html>

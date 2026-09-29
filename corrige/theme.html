@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corrigé - Changeur de thème (réservé enseignant)</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Corrigé — TP 1 · Changeur de thème</h1>
+      <p><strong>Réservé aux enseignants — non lié depuis l'index étudiant.</strong></p>
+
+      <h2>script.js complet</h2>
+      <pre><code>// 1. Sélection des éléments du DOM (Q7 &amp; Q8 du TP d'origine)
+const themeButton = document.getElementById("toggle-theme-btn");
+const bodyElement = document.querySelector("body");
+
+// 2. Écouteur d'événement (Q10)
+themeButton.addEventListener("click", function () {
+  // Q13 : bascule de la classe .dark-theme sur le body
+  bodyElement.classList.toggle("dark-theme");
+
+  // Q15 - Q17 : mise à jour du texte du bouton selon le thème actif
+  if (bodyElement.classList.contains("dark-theme")) {
+    themeButton.textContent = "Activer le Mode Clair";
+  } else {
+    themeButton.textContent = "Activer le Mode Sombre";
+  }
+});</code></pre>
+
+      <h2>Correspondance avec les exercices de la page</h2>
+      <ul>
+        <li><strong>Exercice 1 (Q1–Q2)</strong> : <code>getElementById("toggle-theme-btn")</code> et <code>querySelector("body")</code>.</li>
+        <li><strong>Exercice 2 (Q3)</strong> : <code>themeButton.addEventListener("click", function () { console.log("Clic !"); });</code></li>
+        <li><strong>Exercice 3 (Q4–Q5)</strong> : <code>bodyElement.classList.toggle("dark-theme")</code> puis le <code>if/else</code> sur <code>classList.contains</code> ci-dessus.</li>
+      </ul>
+
+      <p><a href="../index.html">← Retour à l'accueil</a></p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TP 2 - Canvas, animation - R112-Appli_JS</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="../index.html">R112-Appli_JS</a>
+        <nav>
+          <a href="theme.html">Changeur de thème</a>
+          <a href="canvas.html">Canvas</a>
+          <a class="active" href="canvas-animation.html">Animation</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenu">
+      <h1>TP 2 · Canvas — animation (effet d'écho)</h1>
+      <p>
+        Objectif : animer les cercles concentriques pour créer un
+        <strong>effet d'écho</strong> : les cercles rétrécissent puis
+        réapparaissent, en boucle.
+      </p>
+
+      <h2>3.1 Animer avec requestAnimationFrame</h2>
+      <p>
+        Une animation canvas suit toujours le même schéma :
+      </p>
+      <pre><code>function animer() {
+  // 1. Effacer le canvas : ctx.clearRect(0, 0, largeur, hauteur);
+  // 2. Mettre à jour les valeurs (rayon, opacité…)
+  // 3. Redessiner
+  requestAnimationFrame(animer); // 4.Replanifier la frame suivante
+}</code></pre>
+
+      <div class="essai" data-essai data-titre="Exercice 1 — Un rayon qui pulse">
+        <textarea>const canvas = document.getElementById("monCanvas");
+const ctx = canvas.getContext("2d");
+
+let rayon = 180;
+let sens = -1; // -1 = rétrécit, +1 = grossit
+
+function dessinerCercle(r, alpha) {
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.arc(200, 200, Math.max(r, 1), 0, 2 * Math.PI);
+  ctx.strokeStyle = "#b5560f";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+
+function animer() {
+  // Q1 : effacez le canvas (clearRect 0,0,400,400)
+
+  // Q2 : mettez à jour rayon : rayon += sens * 2 ;
+  //      inversez sens si rayon <= 20 ou rayon >= 180
+
+  // Q3 : dessinez le cercle : dessinerCercle(rayon, 1)
+
+  requestAnimationFrame(animer);
+}
+
+animer();</textarea>
+      </div>
+
+      <h2>3.2 L'effet d'écho complet</h2>
+      <p>
+        On combine : plusieurs cercles, chacun avec un rayon et une opacité issus
+        de la même onde, redessinés à chaque frame.
+      </p>
+
+      <div class="essai" data-essai data-titre="Exercice 2 — Echo de cercles">
+        <textarea>const canvas = document.getElementById("monCanvas");
+const ctx = canvas.getContext("2d");
+
+const nbCercles = 6;
+let temps = 0;
+
+function dessinerCercle(r, alpha) {
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.arc(200, 200, Math.max(r, 1), 0, 2 * Math.PI);
+  ctx.strokeStyle = "#2f5fd9";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+
+function lancerAnimation() {
+  // Q4 : effacez le canvas
+  temps += 0.03;
+  for (let i = 0; i < nbCercles; i++) {
+    // Q5 : calculez un rayon oscillant, par exemple :
+    //   60 + 60 * Math.sin(temps - i * 0.5)
+    // et une opacité qui décroît avec i :
+    //   1 - i / nbCercles
+    // puis appelez dessinerCercle(rayon, alpha)
+  }
+  requestAnimationFrame(lancerAnimation);
+}
+
+// Q6 : appelez lancerAnimation() pour que l'animation
+// démarre dès le chargement de la page.
+</textarea>
+      </div>
+
+      <div class="callout ok">
+        <h4>Vérification</h4>
+        <p>
+          Quand tout fonctionne, la démo affiche des cercles bleus qui pulsent en
+          décalé, comme des ondes dans l'eau — l'équivalent animé du rendu attendu
+          du TP Canvas.
+        </p>
+      </div>
+
+      <div class="quiz">
+        <p class="quiz-question">Pourquoi appeler <code>requestAnimationFrame(animer)</code> <em>à la fin</em> de <code>animer()</code> ?</p>
+        <div class="quiz-choix">
+          <button type="button" data-bon>Pour replanifier la frame suivante et boucler l'animation</button>
+          <button type="button">Pour arrêter l'animation</button>
+          <button type="button">C'est facultatif, l'animation tourne toute seule</button>
+        </div>
+        <p class="quiz-explication" hidden>
+          <code>requestAnimationFrame</code> ne fait qu'<strong>une</strong> frame :
+          sans rappel, l'animation s'arrêterait après un seul dessin. L'appel
+          récursif crée la boucle d'animation, synchronisée sur le rafraîchissement
+          de l'écran.
+        </p>
+      </div>
+
+      <footer class="site-footer">
+        R112-Appli_JS · BUT MMI 1 · R1.12 Développement Web ·
+        <a href="../index.html">Accueil du site</a> ·
+        <a href="theme.html">TP précédent : Changeur de thème</a>
+      </footer>
+    </main>
+
+    <script src="../js/bac-a-sable.js"></script>
+  </body>
+</html>
