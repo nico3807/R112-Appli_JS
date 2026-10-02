@@ -20,6 +20,7 @@ r112-appli_js/
 ├── animation.html    TP 3 · Canvas : animation (requestAnimationFrame, rebond, écho)
 ├── memo.html         Aide-mémoire DOM, événements, Canvas, erreurs fréquentes
 ├── css/style.css     Charte de bases_de_js + styles des ateliers
+├── img/              Logos IUT de Béziers et MMI de l'en-tête
 └── js/
     ├── main.js            Menu actif, quiz, boutons indice / solution
     ├── trace.js           Exécution pas à pas (boucle des cercles, rebond)
