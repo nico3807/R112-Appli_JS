@@ -22,7 +22,7 @@ r112-appli_js/
 ├── css/style.css     Charte de bases_de_js + styles des ateliers
 ├── img/              Logos IUT de Béziers et MMI de l'en-tête
 └── js/
-    ├── main.js            Menu actif, quiz, boutons indice / solution
+    ├── main.js            Menu actif, quiz, bouton indice
     ├── trace.js           Exécution pas à pas (boucle des cercles, rebond)
     ├── atelier.js         Ateliers DOM / Canvas : aperçu et vérification
     ├── exercices-data.js  Les 10 exercices, avec leurs tests
@@ -59,8 +59,9 @@ l'historique de ses vérifications sont enregistrés à son nom sur le poste
 (`localStorage`, clés `r112-appli:…`), et restent actifs d'une page à l'autre
 tant que l'onglet est ouvert. Le bouton « 📜 Certificat PDF » produit une
 attestation « NON TERMINÉ » ou, une fois les 10 exercices réussis, un
-certificat de réussite. Les solutions consultées y sont indiquées.
+certificat de réussite.
 
-Les solutions sont dans les pages (bouton « Voir une solution », tracé dans
-le certificat) : il n'y a plus de dossier de corrigés séparé. Le dépôt étant
-public, un tel dossier restait de toute façon accessible aux étudiant·es.
+Les solutions ne sont pas affichées aux étudiant·es : seul un indice est
+proposé pour chaque exercice. Les solutions de référence (champ `solution`
+de `js/exercices-data.js`) servent aux tests ; il n'y a plus de dossier de
+corrigés séparé.
