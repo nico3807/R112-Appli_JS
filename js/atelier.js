@@ -265,11 +265,8 @@ var Atelier = (function () {
         '<div class="atelier-test" aria-hidden="true"></div>' +
         '<div class="exo-actions">' +
           '<button type="button" class="btn secondary petit" data-affiche="indice-' + exo.id + '">💡 Un indice</button>' +
-          '<button type="button" class="btn secondary petit voir-solution" data-affiche="solution-' + exo.id + '">Voir une solution</button>' +
         '</div>' +
         '<div class="indice" id="indice-' + exo.id + '" hidden><strong>Indice —</strong> ' + exo.indice + '</div>' +
-        '<div class="solution" id="solution-' + exo.id + '" hidden><strong>Une solution possible</strong> (il en existe d\'autres !)' +
-          '<pre><code>' + echapper(exo.solution) + '</code></pre></div>' +
       '</div>';
 
     var zone = conteneur.querySelector('textarea');
@@ -350,9 +347,6 @@ var Atelier = (function () {
       }
     });
     zone.addEventListener('input', function () { parcours.sauverCode(exo.id, zone.value); });
-    conteneur.querySelector('.voir-solution').addEventListener('click', function () {
-      parcours.noterSolution(exo.id);
-    });
 
     // Après identification : on reprend le code enregistré (sinon on garde
     // ce qui a été tapé avant de s'identifier) et on coche si déjà réussi.
