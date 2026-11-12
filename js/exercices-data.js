@@ -6,7 +6,9 @@
 //   consigne (HTML), code (code de départ), indice (HTML), solution,
 //   expose : noms de variables / fonctions du code que le test peut lire,
 //   cas : relances avec d'autres valeurs de départ (facultatif),
-//   verifier(t) : renvoie [{ ok, texte }] — t est décrit dans atelier.js.
+//   verifier(t) : renvoie [{ ok, texte }] — t est décrit dans atelier.js,
+//   seance : { texte, reponses } question de la validation en séance (60 s,
+//   en présentiel) ; plusieurs réponses acceptées, casse et espaces ignorés.
 
 var TP = [
   { id: 'theme', libelle: 'Changeur de thème', page: 'theme.html' },
@@ -41,6 +43,10 @@ var EXERCICES = [
       'console.log("Bouton :", themeButton);\n' +
       'console.log("Texte du bouton :", themeButton && themeButton.textContent);',
     expose: ['themeButton', 'bodyElement'],
+    seance: {
+      texte: 'Que renvoie <code>document.getElementById("#toggle-theme-btn")</code>, écrit avec un # devant l\'id ?',
+      reponses: ['null']
+    },
     verifier: function (t) {
       var bouton = t.doc.getElementById('toggle-theme-btn');
       return [
@@ -66,6 +72,10 @@ var EXERCICES = [
       'themeButton.addEventListener("click", function () {\n' +
       '  console.log("Clic !");\n' +
       '});',
+    seance: {
+      texte: "Avec votre code, le bouton est cliqué 3 fois. Combien de fois « Clic ! » s'affiche-t-il dans la console ?",
+      reponses: ['3', 'trois']
+    },
     verifier: function (t) {
       var avant = t.console.filter(function (l) { return l === 'Clic !'; }).length;
       t.cliquer('#toggle-theme-btn');
@@ -100,6 +110,10 @@ var EXERCICES = [
       'themeButton.addEventListener("click", function () {\n' +
       '  bodyElement.classList.toggle("dark-theme");\n' +
       '});',
+    seance: {
+      texte: 'La page est en mode clair. Après 5 clics sur le bouton, le body a-t-il la classe dark-theme ? (oui / non)',
+      reponses: ['oui']
+    },
     verifier: function (t) {
       var b = t.doc.body;
       var d0 = b.classList.contains('dark-theme');
@@ -141,6 +155,10 @@ var EXERCICES = [
       '    themeButton.textContent = "Activer le Mode Sombre";\n' +
       '  }\n' +
       '});',
+    seance: {
+      texte: 'La page est en mode clair. Après 2 clics sur le bouton, quel texte affiche-t-il ?',
+      reponses: ['Activer le Mode Sombre']
+    },
     verifier: function (t) {
       var btn = t.doc.getElementById('toggle-theme-btn');
       var b = t.doc.body;
@@ -183,6 +201,10 @@ var EXERCICES = [
       'ctx.strokeStyle = "#2f5fd9";\n' +
       'ctx.lineWidth = 4;\n' +
       'ctx.stroke();',
+    seance: {
+      texte: 'Quelle méthode du contexte faut-il appeler pour que le cercle décrit par <code>arc()</code> soit réellement tracé en contour ?',
+      reponses: ['stroke', 'stroke()', 'ctx.stroke()', 'ctx.stroke();']
+    },
     verifier: function (t) {
       var c = t.cercles(undefined, 'stroke').filter(function (x) { return x.x === 200 && x.y === 200 && x.r === 100; })[0];
       return [
@@ -213,6 +235,10 @@ var EXERCICES = [
       'ctx.arc(200, 200, 50, 0, 2 * Math.PI);\n' +
       'ctx.fillStyle = "#b5560f";\n' +
       'ctx.fill();',
+    seance: {
+      texte: "Quelle propriété du contexte règle la couleur de remplissage d'une forme ?",
+      reponses: ['fillStyle', 'ctx.fillStyle']
+    },
     verifier: function (t) {
       var c = t.cercles(undefined, 'fill').filter(function (x) { return x.x === 200 && x.y === 200 && x.r === 50; })[0];
       return [
@@ -263,6 +289,10 @@ var EXERCICES = [
       '}\n\n' +
       'ctx.globalAlpha = 1;',
     cas: [{ valeurs: { nbCercles: 8 } }, { valeurs: { nbCercles: 5 } }],
+    seance: {
+      texte: 'Avec nbCercles = 4 et maxRayon = 180, quel est le rayon du cercle tracé quand i vaut 2 ?',
+      reponses: ['90']
+    },
     verifier: function (t) {
       var n = t.valeurs.nbCercles;
       var ecart = 180 / n;
@@ -318,6 +348,10 @@ var EXERCICES = [
       'dessiner(120);\n' +
       'dessiner(170);',
     expose: ['dessiner'],
+    seance: {
+      texte: "Sans <code>clearRect</code>, on appelle <code>dessiner(60)</code> puis <code>dessiner(120)</code>. Combien de cercles voit-on à l'écran ?",
+      reponses: ['2', 'deux']
+    },
     verifier: function (t) {
       if (typeof t.expose.dessiner !== 'function') return [point(false, 'La fonction <code>dessiner</code> existe')];
       t.journal.length = 0;
@@ -387,6 +421,10 @@ var EXERCICES = [
       '  requestAnimationFrame(animer);\n' +
       '}\n\n' +
       'animer();',
+    seance: {
+      texte: "Dans votre animation, rayon vaut 22 et sens vaut -1. Combien vaut rayon après l'image suivante ?",
+      reponses: ['20']
+    },
     verifier: function (t) {
       var jouees = t.avancer(200);
       if (jouees === 0) return [point(false, 'L\'animation ne tourne pas : <code>animer()</code> doit être appelée une première fois, puis redemander l\'image suivante avec <code>requestAnimationFrame(animer)</code>')];
@@ -470,6 +508,10 @@ var EXERCICES = [
       '}\n\n' +
       'lancerAnimation();',
     cas: [{ valeurs: { nbCercles: 6 } }, { valeurs: { nbCercles: 4 } }],
+    seance: {
+      texte: "Avec nbCercles = 6, quelle est l'opacité du cercle numéro i = 3 ?",
+      reponses: ['0.5', '1/2', '3/6']
+    },
     verifier: function (t) {
       var n = t.valeurs.nbCercles;
       var demarre = t.enAttente() > 0;
