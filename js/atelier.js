@@ -347,6 +347,8 @@ var Atelier = (function () {
       }
     });
     zone.addEventListener('input', function () { parcours.sauverCode(exo.id, zone.value); });
+    // Indices de démarche : part tapée / collée, temps, essais, sorties.
+    parcours.suivreSaisie(zone, exo.id);
 
     // Après identification : on reprend le code enregistré (sinon on garde
     // ce qui a été tapé avant de s'identifier) et on coche si déjà réussi.

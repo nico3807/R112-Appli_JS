@@ -27,7 +27,8 @@ r112-appli_js/
     ├── atelier.js         Ateliers DOM / Canvas : aperçu et vérification
     ├── exercices-data.js  Les 10 exercices, avec leurs tests
     ├── exercices.js       Branche les ateliers sur la session et le certificat
-    ├── parcours.js        Identification prénom + nom, certificat (copie de bases_de_js)
+    ├── parcours.js        Identification, mesure de la saisie, certificat (copie de bases_de_js)
+    ├── seance.js          Validation en séance : questions chronométrées (copie de bases_de_js)
     ├── certificat.js      PDF du certificat (jsPDF, même mise en page que CCJS)
     ├── certificat-logos.js Logos UM et MMI en base64
     ├── pages/             Déroulés des exécutions pas à pas
@@ -65,3 +66,19 @@ Les solutions ne sont pas affichées aux étudiant·es : seul un indice est
 proposé pour chaque exercice. Les solutions de référence (champ `solution`
 de `js/exercices-data.js`) servent aux tests ; il n'y a plus de dossier de
 corrigés séparé.
+
+## Indices de démarche et validation en séance
+
+Pour repérer un usage systématique de l'IA, le certificat contient des
+**indices** (pas une preuve) : pour chaque exercice, la part du code tapée au
+clavier ou collée depuis l'extérieur de la page (un copier-coller interne à la
+page ne compte pas), le temps, le nombre d'essais et les sorties de la page.
+Un exercice est « écrit au clavier » si moins de 20 % du code ajouté a été
+collé ; le seuil attendu est de 80 % des exercices écrits au clavier.
+
+En fin de parcours, la **validation en séance** pose, en présentiel, une
+question chronométrée (60 s) par exercice réussi (questions rédigées dans
+`js/exercices-data.js`, champ `seance`). L'enseignant·e choisit et affiche un
+code de séance ; la page ne le vérifie pas (il serait lisible dans le site
+public) mais l'inscrit dans le certificat avec la date et l'heure. Une seule
+tentative ; quitter la page fait échouer la question en cours.

@@ -58,5 +58,11 @@
     var exo = exercice(Number(el.getAttribute('data-exo')));
     if (exo) ateliers.push(Atelier.monter(el, exo, parcours, mettreAJour));
   });
+
+  // Validation en séance (bouton sur la page d'accueil) : questions rédigées
+  // dans js/exercices-data.js (champ « seance »).
+  if (typeof Seance !== 'undefined') {
+    Seance(parcours, { titre: 'R1.12 - Appli JS', questionPour: function (exo) { return exo.seance; } });
+  }
   mettreAJour();
 })();
