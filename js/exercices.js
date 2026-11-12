@@ -2,7 +2,7 @@
 // de l'étudiant·e et le certificat PDF (js/parcours.js, même principe que les
 // dépôts CCJS et bases_de_js). L'identification est demandée à la première
 // vérification, puis gardée d'une page à l'autre tant que l'onglet est ouvert.
-//   - barre de session : #etudiant-nom, #ouvrir-certificat, #changer-etudiant
+//   - barre de session : #etudiant-nom, #ouvrir-certificat, #changer-etudiant, #validation-seance
 //   - compteur du TP   : #progress-tp (sur la page d'un TP, data-tp sur <main>)
 //   - accueil          : #progression-tp (avancement par TP)
 
